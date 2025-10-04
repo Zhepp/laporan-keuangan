@@ -1,61 +1,157 @@
+/* --- GLOBAL STYLES & FONT --- */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f7f6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f8; /* Latar Belakang Lembut */
     color: #333;
     margin: 0;
     padding: 0;
     line-height: 1.6;
 }
 
+/* --- HEADER & PROFIL --- */
 header {
-    background-color: #007bff;
+    background-color: #2c3e50; /* Biru Gelap Tegas */
     color: white;
-    padding: 20px 0;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
 }
 
-main {
-    max-width: 900px;
-    margin: 20px auto;
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
     padding: 0 20px;
 }
 
-section {
+header h1 {
+    font-size: 1.8em;
+    margin: 0;
+    font-weight: 600;
+}
+
+.header-profile {
+    background-color: #34495e; /* Warna sedikit lebih terang dari header */
+    padding: 10px 20px;
+}
+
+.profile-info {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f39c12; /* Placeholder Kuning/Oranye */
+    margin-right: 15px;
+    border: 2px solid white;
+    /* Efek teks/ikon sederhana di tengah */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+}
+.profile-avatar::before {
+    content: '👤'; /* Ikon pengguna */
+}
+
+.profile-details span {
+    font-size: 0.8em;
+    display: block;
+    color: #bdc3c7;
+}
+
+.user-email-text {
+    font-size: 1em;
+    font-weight: 700;
+}
+
+
+/* --- MAIN CONTENT & CARD STYLES --- */
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+/* Tata letak grid untuk layar besar */
+@media (min-width: 768px) {
+    main {
+        grid-template-columns: 1fr 2fr; /* 1 kolom untuk form/summary, 2 kolom untuk history */
+        grid-template-areas: 
+            "summary history"
+            "input history"
+            "export history";
+    }
+    #ringkasan { grid-area: summary; }
+    #inputForm { grid-area: input; }
+    #daftarTransaksi { grid-area: history; }
+    #exportSection { grid-area: export; }
+}
+
+.card {
     background: white;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); /* Bayangan modern */
+    transition: transform 0.2s;
 }
 
 h2 {
-    color: #007bff;
-    border-bottom: 2px solid #eee;
+    color: #1abc9c; /* Hijau Cyan yang Menenangkan */
+    border-bottom: 1px solid #eee;
     padding-bottom: 10px;
     margin-top: 0;
+    font-weight: 600;
+    font-size: 1.4em;
 }
 
-/* --- Ringkasan Saldo --- */
-#ringkasan {
+/* --- SUMMARY CARD --- */
+.summary-card {
+    border-left: 5px solid #3498db; /* Garis biru di samping */
+}
+.total-saldo-display {
     text-align: center;
-    font-size: 1.5em;
-    font-weight: bold;
+    margin-top: 15px;
 }
-
+.total-saldo-display p {
+    margin: 0;
+    font-size: 1.1em;
+    color: #7f8c8d;
+}
+.saldo-amount {
+    font-size: 2.5em;
+    font-weight: 800;
+    display: block;
+    margin-top: 5px;
+}
 #totalSaldo {
-    color: #28a745; /* Warna hijau untuk saldo positif */
+    color: #27ae60; /* Hijau Stabil */
 }
 
-/* --- Formulir Input --- */
+/* --- FORM & INPUTS --- */
 .form-group {
     margin-bottom: 15px;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
 label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin-bottom: 6px;
+    font-weight: 600;
 }
 
 input[type="text"], 
@@ -63,68 +159,101 @@ input[type="number"],
 input[type="date"], 
 select {
     width: 100%;
-    padding: 10px;
+    padding: 10px 12px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Penting agar padding tidak melebarkan input */
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
 }
 
-button[type="submit"] {
-    background-color: #007bff;
+input:focus, select:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+/* --- BUTTON STYLES --- */
+.btn-submit {
+    background-color: #3498db; /* Biru Utama */
     color: white;
     padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
+    font-weight: 700;
     width: 100%;
+    margin-top: 10px;
     transition: background-color 0.3s;
 }
-
-button[type="submit"]:hover {
-    background-color: #0056b3;
+.btn-submit:hover {
+    background-color: #2980b9;
 }
 
-/* --- Tabel Transaksi --- */
-.table-container {
-    overflow-x: auto;
+.btn-logout {
+    background-color: #e74c3c; /* Merah untuk Logout */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+.btn-logout:hover {
+    background-color: #c0392b;
 }
 
+/* --- EXPORT BUTTONS --- */
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+.btn-primary, .btn-secondary {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    width: 100%;
+}
+.btn-primary {
+    background-color: #16a085; /* Hijau Tua */
+    color: white;
+}
+.btn-secondary {
+    background-color: #ecf0f1; /* Abu-abu Muda */
+    color: #333;
+    border: 1px solid #bdc3c7;
+}
+
+/* --- TABLE STYLES --- */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
 }
-
 th, td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 0.95em;
 }
-
 th {
-    background-color: #f2f2f2;
+    background-color: #f9f9f9;
     color: #555;
+    font-weight: 700;
 }
+.pemasukan { color: #27ae60; font-weight: 600; }
+.pengeluaran { color: #e74c3c; font-weight: 600; }
 
-/* Styling Khusus untuk Baris Transaksi */
-.pemasukan {
-    color: #28a745; /* Hijau */
-    font-weight: bold;
-}
-
-.pengeluaran {
-    color: #dc3545; /* Merah */
-    font-weight: bold;
-}
-
-/* Responsif sederhana */
-@media (max-width: 600px) {
+/* Responsive */
+@media (max-width: 767px) {
     main {
-        margin: 10px;
+        grid-template-columns: 1fr;
     }
-    th, td {
-        padding: 8px;
-        font-size: 0.9em;
+    .form-grid {
+        grid-template-columns: 1fr;
     }
 }

@@ -5,8 +5,9 @@ const SUPABASE_URL = 'https://fidnopdmhakcueyqppma.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpZG5vcGRtaGFrY3VleXFwcG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NzI4OTEsImV4cCI6MjA3NTE0ODg5MX0.2JJE0aLE4_anUIaCj5H5edpPpzAqpeUCL0Ic6cpoFUk'; 
 // =======================================================
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Inisialisasi Elemen Dashboard
 const transaksiForm = document.getElementById('transaksiForm');
 const transaksiList = document.getElementById('transaksiList');
 const totalSaldoElement = document.getElementById('totalSaldo');
@@ -15,29 +16,14 @@ const userEmailElement = document.getElementById('userEmail');
 const exportCsvButton = document.getElementById('exportCsvButton');
 const exportPdfButton = document.getElementById('exportPdfButton');
 
+// Elemen Input Dinamis
+const jenisSelect = document.getElementById('jenis');
+const dynamicInputsContainer = document.getElementById('dynamic-inputs'); 
+
 let currentUserId = null;
 
 
-// --- Fungsi Otentikasi & Redirect ---
-supabase.auth.onAuthStateChange((event, session) => {
-    if (!session) {
-        // Jika belum login, redirect ke halaman login
-        window.location.href = 'login.html';
-    } else {
-        // Jika sudah login
-        currentUserId = session.user.id;
-        userEmailElement.textContent = `Masuk sebagai: ${session.user.email}`;
-        loadTransaksi(); // Muat data setelah ID user didapat
-    }
-});
-
-// Aksi Logout
-logoutButton.addEventListener('click', async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) alert('Logout Gagal:', error.message);
-});
-
-// --- Fungsionalitas Utama (Sama seperti sebelumnya, tapi kini ada RLS) ---
+// --- FUNGSI UTILITY ---
 
 const formatRupiah = (number) => {
     return new Intl.NumberFormat('id-ID', {
@@ -47,16 +33,102 @@ const formatRupiah = (number) => {
     }).format(number);
 };
 
-// Mencatat Transaksi (Supabase akan otomatis mengisi user_id)
+// --- RENDER INPUT DINAMIS ---
+function renderDynamicInputs(jenis) {
+    dynamicInputsContainer.innerHTML = ''; // Bersihkan input lama
+
+    if (jenis === 'Pemasukan') {
+        // Pemasukan: Deskripsi & Jumlah
+        dynamicInputsContainer.innerHTML = `
+            <div class="form-group">
+                <label for="deskripsi">Deskripsi</label>
+                <input type="text" id="deskripsi" placeholder="Ex: Kiriman Mama, Gaji Freelance" required>
+            </div>
+            <div class="form-group">
+                <label for="jumlah">Jumlah (Rp)</label>
+                <input type="number" id="jumlah" placeholder="Ex: 500000" min="1" required>
+            </div>
+        `;
+    } else if (jenis === 'Pengeluaran') {
+        // Pengeluaran: Nama Barang, Harga Satuan, Kuantitas
+        dynamicInputsContainer.innerHTML = `
+            <div class="form-group">
+                <label for="namaBarang">Nama Barang</label>
+                <input type="text" id="namaBarang" placeholder="Ex: Buku Tulis, Makan Siang" required>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="harga">Harga Satuan (Rp)</label>
+                    <input type="number" id="harga" placeholder="Ex: 15000" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="kuantitas">Kuantitas</label>
+                    <input type="number" id="kuantitas" placeholder="Ex: 2" min="1" required>
+                </div>
+            </div>
+        `;
+    }
+}
+
+
+// --- EVENT LISTENERS ---
+
+// Event Listener untuk Jenis Transaksi
+jenisSelect.addEventListener('change', (e) => {
+    renderDynamicInputs(e.target.value);
+});
+
+// Aksi Logout
+logoutButton.addEventListener('click', async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) alert('Logout Gagal:', error.message);
+});
+
+// Aksi Submit Transaksi (dengan Logika Perhitungan Baru)
 transaksiForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // ... (Logika validasi jumlah tetap sama) ...
-    const jenis = document.getElementById('jenis').value;
-    const deskripsi = document.getElementById('deskripsi').value;
-    const jumlah = parseFloat(document.getElementById('jumlah').value);
-    const tanggal = document.getElementById('tanggal').value;
+    const jenis = jenisSelect.value;
+    const tanggal = document.getElementById('tanggal').value; 
+    let deskripsi, jumlah;
 
+    // Logika Pengambilan Data dan Perhitungan
+    if (jenis === 'Pemasukan') {
+        // Ambil data dari input yang dirender untuk Pemasukan
+        const deskripsiInput = document.getElementById('deskripsi');
+        const jumlahInput = document.getElementById('jumlah');
+        
+        if (!deskripsiInput || !jumlahInput) {
+             alert("Error: Input Deskripsi atau Jumlah tidak ditemukan. Coba ganti Jenis Transaksi.");
+             return;
+        }
+        
+        deskripsi = deskripsiInput.value;
+        jumlah = parseFloat(jumlahInput.value);
+
+    } else if (jenis === 'Pengeluaran') {
+        // Ambil data dari input yang dirender untuk Pengeluaran
+        const namaBarang = document.getElementById('namaBarang').value;
+        const harga = parseFloat(document.getElementById('harga').value);
+        const kuantitas = parseFloat(document.getElementById('kuantitas').value);
+
+        // Validasi Harga dan Kuantitas
+        if (isNaN(harga) || isNaN(kuantitas) || harga <= 0 || kuantitas <= 0) {
+            alert("Harga dan Kuantitas harus berupa angka positif!");
+            return;
+        }
+
+        // Hitung total jumlah dan buat deskripsi gabungan
+        jumlah = harga * kuantitas;
+        deskripsi = `${namaBarang} (x${kuantitas})`; // Contoh: Buku Tulis (x2)
+    }
+
+    if (isNaN(jumlah) || jumlah <= 0) {
+        alert("Jumlah transaksi harus berupa angka positif!");
+        return;
+    }
+
+    // Mengirim data ke tabel 'transaksi' di Supabase
     const { error } = await supabase
         .from('transaksi')
         .insert([
@@ -67,12 +139,16 @@ transaksiForm.addEventListener('submit', async (e) => {
         console.error('Error saat mencatat transaksi:', error.message);
         alert('Gagal mencatat. Pastikan RLS Policy sudah diatur dengan benar!');
     } else {
-        alert('Transaksi berhasil dicatat!');
+        alert('Transaksi berhasil dicatat! 🎉');
         transaksiForm.reset();
         loadTransaksi();
+        // Render kembali input default setelah reset
+        renderDynamicInputs(jenisSelect.value); 
     }
 });
 
+
+// --- FUNGSI MEMUAT DATA ---
 
 // Memuat Transaksi (RLS memastikan hanya data user ini yang diambil)
 async function loadTransaksi() {
@@ -117,11 +193,11 @@ async function loadTransaksi() {
     });
 
     totalSaldoElement.textContent = formatRupiah(totalSaldo);
-    totalSaldoElement.style.color = totalSaldo < 0 ? '#dc3545' : '#28a745';
+    totalSaldoElement.style.color = totalSaldo < 0 ? '#e74c3c' : '#27ae60'; // Warna dari style.css baru
 }
 
 
-// --- Fungsionalitas Export ---
+// --- FUNGSI EXPORT DATA ---
 
 // Aksi Export ke CSV (Bisa dibuka dengan Excel)
 exportCsvButton.addEventListener('click', async () => {
@@ -164,18 +240,39 @@ exportCsvButton.addEventListener('click', async () => {
 exportPdfButton.addEventListener('click', () => {
     // Sembunyikan form dan tombol yang tidak perlu dicetak
     document.getElementById('inputForm').style.display = 'none';
-    logoutButton.style.display = 'none';
-    exportCsvButton.style.display = 'none';
-    exportPdfButton.style.display = 'none';
+    document.getElementById('logoutButton').style.display = 'none';
+    document.getElementById('exportSection').style.display = 'none'; // Sembunyikan card export
 
     // Panggil dialog print browser (yang bisa menyimpan sebagai PDF)
     window.print();
 
     // Tampilkan kembali setelah print
-    document.getElementById('inputForm').style.display = 'block';
-    logoutButton.style.display = 'inline';
-    exportCsvButton.style.display = 'inline';
-    exportPdfButton.style.display = 'inline';
+    setTimeout(() => {
+        document.getElementById('inputForm').style.display = 'block';
+        document.getElementById('logoutButton').style.display = 'inline-block';
+        document.getElementById('exportSection').style.display = 'block';
+    }, 500);
 });
 
-// Catatan: loadTransaksi() dipanggil di onAuthStateChange
+
+// --- OTENTIKASI DAN INISIALISASI ---
+
+// Cek status otentikasi saat halaman dimuat
+supabase.auth.onAuthStateChange((event, session) => {
+    if (!session) {
+        // Jika belum login, redirect ke halaman login
+        window.location.href = 'login.html';
+    } else {
+        // Jika sudah login
+        currentUserId = session.user.id;
+        userEmailElement.textContent = `${session.user.email}`;
+        loadTransaksi(); // Muat data setelah ID user didapat
+    }
+});
+
+// Panggil fungsi render dynamic inputs saat DOM selesai dimuat
+document.addEventListener('DOMContentLoaded', () => {
+    if (jenisSelect && jenisSelect.value) {
+        renderDynamicInputs(jenisSelect.value); 
+    }
+});

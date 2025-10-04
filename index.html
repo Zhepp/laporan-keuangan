@@ -3,29 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Keuangan Mahasiswa</title>
+    <title>Dashboard Keuangan Transparan</title>
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <header>
-        <h1>💵 Laporan Keuangan Perantauan 🎓</h1>
-        <div style="text-align: right; padding-right: 20px;">
-            <span id="userEmail" style="margin-right: 10px; font-size: 0.9em;"></span>
-            <button id="logoutButton" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">Logout</button>
+        <div class="header-top">
+            <h1>LAPORAN KEUANGAN</h1>
+            <button id="logoutButton" class="btn-logout">Logout</button>
+        </div>
+        <div class="header-profile">
+            <div class="profile-info">
+                <!-- Placeholder Foto Profil -->
+                <div class="profile-avatar"></div> 
+                <div class="profile-details">
+                    <span>Masuk sebagai:</span>
+                    <strong id="userEmail" class="user-email-text">Memuat Email...</strong>
+                </div>
+            </div>
         </div>
     </header>
 
     <main>
-        <section id="ringkasan">
-            <h2>Ringkasan Saldo</h2>
-            <p>Total Saldo: <span id="totalSaldo">Memuat...</span></p>
+        <!-- Baris Tombol Export -->
+        <section id="exportSection" class="card export-card">
+            <h2>Alat Laporan</h2>
+            <div class="export-buttons">
+                <button id="exportCsvButton" class="btn-primary">Export ke CSV (Excel)</button>
+                <button id="exportPdfButton" class="btn-secondary">Export ke PDF</button>
+            </div>
+        </section>
+        
+        <!-- Ringkasan Saldo -->
+        <section id="ringkasan" class="card summary-card">
+            <h2>Ringkasan Saldo Saat Ini</h2>
+            <div class="total-saldo-display">
+                <p>Total Saldo:</p>
+                <span id="totalSaldo" class="saldo-amount">Rp 0</span>
+            </div>
         </section>
 
-        <section id="inputForm">
+        <!-- Input Form -->
+        <section id="inputForm" class="card input-card">
             <h2>Catat Transaksi Baru</h2>
             <form id="transaksiForm">
+                <!-- BARIS 1: JENIS TRANSAKSI (STATIS) -->
                 <div class="form-group">
                     <label for="jenis">Jenis Transaksi</label>
                     <select id="jenis" required>
@@ -33,24 +57,24 @@
                         <option value="Pengeluaran">Pengeluaran</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="deskripsi">Deskripsi</label>
-                    <input type="text" id="deskripsi" placeholder="Ex: Kiriman Ortu, Beli Makan" required>
-                </div>
-                <div class="form-group">
-                    <label for="jumlah">Jumlah (Rp)</label>
-                    <input type="number" id="jumlah" placeholder="Ex: 50000" min="1" required>
-                </div>
+                
+                <!-- BARIS 2: TANGGAL (STATIS) -->
                 <div class="form-group">
                     <label for="tanggal">Tanggal</label>
                     <input type="date" id="tanggal" required>
                 </div>
                 
-                <button type="submit">Catat Transaksi</button>
+                <!-- CONTAINER DINAMIS (DIKONTROL PENUH OLEH JS) -->
+                <div id="dynamic-inputs">
+                    <!-- Konten ini akan diisi oleh JS -->
+                </div>
+                
+                <button type="submit" class="btn-submit">Catat Transaksi</button>
             </form>
         </section>
 
-        <section id="daftarTransaksi">
+        <!-- Daftar Transaksi -->
+        <section id="daftarTransaksi" class="card history-card">
             <h2>Riwayat Transaksi</h2>
             <div class="table-container">
                 <table>
