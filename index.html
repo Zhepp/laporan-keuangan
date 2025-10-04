@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Keuangan Mahasiswa</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <h1>💵 Laporan Keuangan Perantauan 🎓</h1>
+        <div style="text-align: right; padding-right: 20px;">
+            <span id="userEmail" style="margin-right: 10px; font-size: 0.9em;"></span>
+            <button id="logoutButton" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">Logout</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="ringkasan">
+            <h2>Ringkasan Saldo</h2>
+            <p>Total Saldo: <span id="totalSaldo">Memuat...</span></p>
+        </section>
+
+        <section id="inputForm">
+            <h2>Catat Transaksi Baru</h2>
+            <form id="transaksiForm">
+                <div class="form-group">
+                    <label for="jenis">Jenis Transaksi</label>
+                    <select id="jenis" required>
+                        <option value="Pemasukan">Pemasukan</option>
+                        <option value="Pengeluaran">Pengeluaran</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi</label>
+                    <input type="text" id="deskripsi" placeholder="Ex: Kiriman Ortu, Beli Makan" required>
+                </div>
+                <div class="form-group">
+                    <label for="jumlah">Jumlah (Rp)</label>
+                    <input type="number" id="jumlah" placeholder="Ex: 50000" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="tanggal">Tanggal</label>
+                    <input type="date" id="tanggal" required>
+                </div>
+                
+                <button type="submit">Catat Transaksi</button>
+            </form>
+        </section>
+
+        <section id="daftarTransaksi">
+            <h2>Riwayat Transaksi</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Deskripsi</th>
+                            <th>Jenis</th>
+                            <th>Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaksiList">
+                        <tr><td colspan="4">Tidak ada transaksi.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
