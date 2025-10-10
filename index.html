@@ -11,12 +11,11 @@
 <body>
     <header>
         <div class="header-top">
-            <h1>LAPORAN KEUANGAN</h1>
+            <h1>💵 Laporan Keuangan Perantauan 🎓</h1>
             <button id="logoutButton" class="btn-logout">Logout</button>
         </div>
         <div class="header-profile">
             <div class="profile-info">
-                <!-- Placeholder Foto Profil -->
                 <div class="profile-avatar"></div> 
                 <div class="profile-details">
                     <span>Masuk sebagai:</span>
@@ -27,7 +26,6 @@
     </header>
 
     <main>
-        <!-- Baris Tombol Export -->
         <section id="exportSection" class="card export-card">
             <h2>Alat Laporan</h2>
             <div class="export-buttons">
@@ -36,7 +34,6 @@
             </div>
         </section>
         
-        <!-- Ringkasan Saldo -->
         <section id="ringkasan" class="card summary-card">
             <h2>Ringkasan Saldo Saat Ini</h2>
             <div class="total-saldo-display">
@@ -45,35 +42,33 @@
             </div>
         </section>
 
-        <!-- Input Form -->
         <section id="inputForm" class="card input-card">
             <h2>Catat Transaksi Baru</h2>
             <form id="transaksiForm">
-                <!-- BARIS 1: JENIS TRANSAKSI (STATIS) -->
-                <div class="form-group">
-                    <label for="jenis">Jenis Transaksi</label>
-                    <select id="jenis" required>
-                        <option value="Pemasukan">Pemasukan</option>
-                        <option value="Pengeluaran">Pengeluaran</option>
-                    </select>
+                <!-- Jenis Transaksi dan Tanggal Tetap -->
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="jenis">Jenis Transaksi</label>
+                        <select id="jenis" required>
+                            <option value="Pemasukan">Pemasukan</option>
+                            <option value="Pengeluaran">Pengeluaran</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggal">Tanggal</label>
+                        <input type="date" id="tanggal" required>
+                    </div>
                 </div>
                 
-                <!-- BARIS 2: TANGGAL (STATIS) -->
-                <div class="form-group">
-                    <label for="tanggal">Tanggal</label>
-                    <input type="date" id="tanggal" required>
-                </div>
-                
-                <!-- CONTAINER DINAMIS (DIKONTROL PENUH OLEH JS) -->
+                <!-- CONTAINER INPUT DINAMIS -->
                 <div id="dynamic-inputs">
-                    <!-- Konten ini akan diisi oleh JS -->
+                    <!-- Ini akan diisi oleh app.js -->
                 </div>
                 
                 <button type="submit" class="btn-submit">Catat Transaksi</button>
             </form>
         </section>
 
-        <!-- Daftar Transaksi -->
         <section id="daftarTransaksi" class="card history-card">
             <h2>Riwayat Transaksi</h2>
             <div class="table-container">
@@ -84,10 +79,11 @@
                             <th>Deskripsi</th>
                             <th>Jenis</th>
                             <th>Jumlah</th>
+                            <th>Aksi</th> <!-- KOLOM BARU -->
                         </tr>
                     </thead>
                     <tbody id="transaksiList">
-                        <tr><td colspan="4">Tidak ada transaksi.</td></tr>
+                        <tr><td colspan="5">Tidak ada transaksi.</td></tr>
                     </tbody>
                 </table>
             </div>
