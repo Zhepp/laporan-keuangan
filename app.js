@@ -42,7 +42,7 @@ function renderDynamicInputs(jenis) {
         dynamicInputsContainer.innerHTML = `
             <div class="form-group">
                 <label for="deskripsi">Deskripsi</label>
-                <input type="text" id="deskripsi" placeholder="Ex: Kiriman Mama, Gaji Freelance" required>
+                <input type="text" id="deskripsi" placeholder="Ex: Kiriman Ortu" required>
             </div>
             <div class="form-group">
                 <label for="jumlah">Jumlah (Rp)</label>
