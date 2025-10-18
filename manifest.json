@@ -1,0 +1,21 @@
+{
+  "name": "Keuangan Zhepp",
+  "short_name": "Keuangan Zhepp",
+  "description": "Laporan Keuangan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#00bcd4",
+  "icons": [
+    {
+      "src": "/profil.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/profil.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
